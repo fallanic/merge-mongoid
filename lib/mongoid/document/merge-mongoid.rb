@@ -7,9 +7,9 @@ module Mongoid
       def merge!(another_document)
         if another_document.nil?
           raise "Cannot merge a nil document."
-        elsif self.class != another_document
+        elsif self.class != another_document.class
           raise "Cannot merge two different models."
-        elsif !self.ancestors.map(&:name).include?("Mongoid::Document") || another_document.ancestors.map(&:name).include?("Mongoid::Document")
+        elsif (!self.is_a? Mongoid::Document) || (!another_document.is_a? Mongoid::Document)
           raise "Can only merge mongoid documents."
         else 
           # let's merge these documents
@@ -53,7 +53,9 @@ module Mongoid
             if a.nil? && (b != nil)
               a = b
             end
-          end 
+          end
+          
+          return a 
         end
       end
     end
