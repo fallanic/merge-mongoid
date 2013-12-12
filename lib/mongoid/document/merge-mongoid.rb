@@ -31,8 +31,8 @@ module Mongoid
       private
       
       def merge_attributes(a,b)
-        if (a.class != nil) && (b.class != nil) && (a.class != b.class)
-          raise "Can't merge different types : "+a.class+" and "+b.class
+        if (a.class != NilClass) && (b.class != NilClass) && (a.class != b.class)
+          raise "Can't merge different types : "+a.class.to_s+" and "+b.class.to_s
         else
           if (a != nil) && (a.is_a? Array) && (b.is_a? Array)
             # For an Array

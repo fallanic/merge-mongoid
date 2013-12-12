@@ -55,6 +55,16 @@ describe Mongoid::Document::Mergeable do
     before(:each) do
       @A = FactoryGirl.build(:myclass)
       @B = FactoryGirl.build(:myclass)
+      
+      #keeping a backup version
+      @A_clone = @A.clone
+      @A_clone.created_at = @A.created_at
+      @A_clone.updated_at = @A.updated_at
+      
+      # just making sure we cloned correctly
+      @A_clone.a_string.should == @A.a_string
+      @A_clone.created_at.should == @A.created_at
+      @A_clone.updated_at.should == @A.updated_at
     end
 
     it "should create two different objects" do
@@ -66,33 +76,37 @@ describe Mongoid::Document::Mergeable do
     end
     
     it "should keep all the A values when merging" do
-      #keeping a backup version
-      A_clone = @A.clone
-      A_clone.created_at = @A.created_at
-      A_clone.updated_at = @A.updated_at
-      
-      # just making sure we cloned correctly
-      A_clone.a_string.should == @A.a_string
-      A_clone.created_at.should == @A.created_at
-      A_clone.updated_at.should == @A.updated_at
-      
       #merging
       @A.merge! @B
       
       #values should be the same
-      A_clone.a_string.should == @A.a_string
-      A_clone.another_string.should == @A.another_string
-      A_clone.a_number.should == @A.a_number
-      A_clone.a_boolean.should == @A.a_boolean
-      A_clone.array_simple_types.should == @A.array_simple_types
-      A_clone.array_hashes.should == @A.array_hashes
-      A_clone.a_hash.should == @A.a_hash
+      @A_clone.a_string.should == @A.a_string
+      @A_clone.another_string.should == @A.another_string
+      @A_clone.a_number.should == @A.a_number
+      @A_clone.a_boolean.should == @A.a_boolean
+      @A_clone.array_simple_types.should == @A.array_simple_types
+      @A_clone.array_hashes.should == @A.array_hashes
+      @A_clone.a_hash.should == @A.a_hash
       
       #date_modified should be changed
-      A_clone.updated_at.should_not == @A.updated_at
+      @A_clone.updated_at.should_not == @A.updated_at
       
       #B should have been deleted
       expect { Myclass.find(@B._id) }.to raise_error(Mongoid::Errors::DocumentNotFound)
+    end
+    
+    it "should replace all A nil attributes by the B ones" do
+      @A = Myclass.new
+      @A.merge! @B
+      
+      #values should all be the B ones
+      @A.a_string.should == @B.a_string
+      @A.another_string.should == @B.another_string
+      @A.a_number.should == @B.a_number
+      @A.a_boolean.should == @B.a_boolean
+      @A.array_simple_types.should == @B.array_simple_types
+      @A.array_hashes.should == @B.array_hashes
+      @A.a_hash.should == @B.a_hash
     end
   end
 end
