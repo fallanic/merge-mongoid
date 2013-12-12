@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.version     = "0.1"
   s.author      = "Fabien Allanic"
   s.homepage    = "http://github.com/fallanic/merge-mongoid"
-  s.summary     = "Easily merge two documents with Mongoid."
-  s.description = "Easily merge two documents with Mongoid. When merging document B into document A, arrays and nested objects will be merged. For the other data types we keep Document A values."
+  s.summary     = "Easily merge two Mongoid documents."
+  s.description = "Easily merge two Mongoid documents. When merging document B into document A, arrays and nested objects will be merged. For the other data types we keep Document A values."
 
   s.files        = Dir["{lib,spec}/**/*", "[A-Z]*", "init.rb"] - ["Gemfile.lock"]
   s.require_path = "lib"
