@@ -51,7 +51,7 @@ FactoryGirl.define do
 end
 
 describe Mongoid::Document::Mergeable do
-  context "Merging of simple types" do
+  context "Merging " do
     before(:each) do
       @A = FactoryGirl.build(:myclass)
       @B = FactoryGirl.build(:myclass)
@@ -84,8 +84,7 @@ describe Mongoid::Document::Mergeable do
       @A_clone.another_string.should == @A.another_string
       @A_clone.a_number.should == @A.a_number
       @A_clone.a_boolean.should == @A.a_boolean
-      @A_clone.array_simple_types.should == @A.array_simple_types
-      @A_clone.array_hashes.should == @A.array_hashes
+      @A_clone.array_simple_types.should == @A.array_simple_types #duplicate values are removed from the array, so it should be the original array
       @A_clone.a_hash.should == @A.a_hash
       
       #date_modified should be changed
@@ -99,7 +98,7 @@ describe Mongoid::Document::Mergeable do
       @A = Myclass.new
       @A.merge! @B
       
-      #values should all be the B ones
+      # values should all be the B ones
       @A.a_string.should == @B.a_string
       @A.another_string.should == @B.another_string
       @A.a_number.should == @B.a_number
@@ -107,6 +106,30 @@ describe Mongoid::Document::Mergeable do
       @A.array_simple_types.should == @B.array_simple_types
       @A.array_hashes.should == @B.array_hashes
       @A.a_hash.should == @B.a_hash
+    end
+    
+    it "should merge arrays with simple types and remove duplicates" do
+      @A.array_simple_types = ["a","totally","different","array"]
+      @A.merge! @B
+      
+      #values should all be the B ones
+      @A.array_simple_types.should == ["a","totally","different","array","an","with","elements"] #duplicate values are removed from the array
+    end
+    
+    it "should merge the arrays of hashes and remove the duplicates if they exist" do
+      #keeping the initial size
+      initial_array_size = @A_clone.array_hashes.size
+      
+      @A.merge! @B
+      #different ObjectIds so it is not merged, just concatenated at the end of the Array
+      @A.array_hashes.size.should == (initial_array_size * 2)
+      
+      #keeping a backup version
+      @A_clone2 = @A_clone.clone
+      
+      @A_clone.merge! @A_clone2
+      # same object ids so the duplicates are removed
+      @A_clone.array_hashes.size.should == initial_array_size
     end
   end
 end

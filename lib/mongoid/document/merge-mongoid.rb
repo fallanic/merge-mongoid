@@ -1,3 +1,5 @@
+require 'mongoid'
+
 module Mongoid
   module Document
     module Mergeable
@@ -31,15 +33,15 @@ module Mongoid
       private
       
       def merge_attributes(a,b)
+        # we might want to remove this test, and for instance merge the different types in an Array
         if (a.class != NilClass) && (b.class != NilClass) && (a.class != b.class)
           raise "Can't merge different types : "+a.class.to_s+" and "+b.class.to_s
         else
           if (a != nil) && (a.is_a? Array) && (b.is_a? Array)
             # For an Array
             # we concat the values in B array at the end of the A Array (if it's not already included).
-            b.each_with_index do |value, index|
-              a[index] = merge_attributes(a[index],b[index]) 
-            end
+            a.concat b
+            a = dedupe a
           elsif (a != nil) && (a.is_a? Hash) && (b.is_a? Hash)
             # For a Hash
             # recursive call
@@ -57,6 +59,24 @@ module Mongoid
           
           return a 
         end
+      end
+      
+      def dedupe array
+        result = []
+        ids = [] #where we store the ObjectIds
+        array.each_with_index do |value,index|
+          if (value.is_a? Hash) && (value['_id'] != nil) && (value['_id'].is_a? Moped::BSON::ObjectId) && (!ids.include? value['_id'])
+            # if there is an ObjectID in it we should check if it's already in the array and remove the duplicate
+            ids << value[key]
+            result << value
+          else
+            if !result.include? value
+              result << value
+            end
+          end
+        end
+        
+        result
       end
     end
   end
