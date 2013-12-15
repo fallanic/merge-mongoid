@@ -6,13 +6,88 @@ Easily merge two Mongoid documents.
 ## What it does
 Let's say we have two Mongo Documents : document A and document B (same class).
 
-When merging document B into document A, arrays and nested objects will be merged. 
+When merging document B into document A, arrays and nested objects will be merged, but duplicate values are not kept. 
 
-For the other data types we keep Document A values.
+For the other data types we always keep Document A values, unless the A value is nil and the B is not.
 
-## Examples of data merges
+## Example of data merge
 
-TBC
+Object A :
+
+    {
+    	_id : "507f1f77bcf86cd799439011",
+    	a_string : "This is the A object"
+        a_number : 100,
+        a_boolean : true,
+        array_simple_types : ["an","array","with","elements"],
+        array_hashes : [{
+          "id" : "507f191e810c19729de860ea",
+          "attribute" : "yes there is one"
+        },{
+          "id" : "4f202e64e6fb1b56ff000000",
+          "attribute" : "a value here too"
+        }],
+        a_hash : {
+            "_id" : "5bf9f23d8ead0e1d32756346",
+            "a string" : "hello",
+            "a number" : 12
+        }
+    }
+
+Object B :
+
+    {
+	    _id : "4f2030d9e6fb1b56ff000001",
+    	a_string : "This is the B object"
+        a_number : 8888,
+        a_boolean : false,
+        array_simple_types : ["an","array","with","cool","things"],
+        array_hashes : [{
+          "id" : "4af9f23d8ead0e1d32000000",
+          "attribute" : "this is a different object"
+        },{
+          "id" : "4f202e64e6fb1b56ff000000",
+          "attribute" : "this one was already there, but for some reason the attribute is different (which is weird BTW)"
+        }],
+        a_hash : {
+            "_id" : "4af9f23d8ead0e1d32111111",
+            "a string" : "another string value",
+            "a number" : 40,
+            "a third attribute" : true
+        }
+    }
+
+Ruby method call
+
+    A.merge! B
+
+Now A contains these values : 
+
+    {
+    	_id : "507f1f77bcf86cd799439011",
+    	a_string : "This is the A object"
+        a_number : 100,
+        a_boolean : true,
+        array_simple_types : ["an","array","with","elements","cool","things"],
+        array_hashes : [{
+          "id" : "507f191e810c19729de860ea",
+          "attribute" : "yes there is one"
+        },{
+          "id" : "4f202e64e6fb1b56ff000000",
+          "attribute" : "a value here too"
+        },{
+          "id" : "4af9f23d8ead0e1d32000000",
+          "attribute" : "this is a different object"
+        }],
+        a_hash : {
+            "_id" : "5bf9f23d8ead0e1d32756346",
+            "a string" : "hello",
+            "a number" : 12,
+            "a third attribute" : true
+        }
+    }
+
+
 
 ## Disclaimer
 I am not a Ruby expert! I just happened to need this feature for a Rails app, so I developed a gem.
