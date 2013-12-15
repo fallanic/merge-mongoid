@@ -105,13 +105,14 @@ Install the gem with: `gem install merge-mongoid` or add  `gem 'merge-mongoid'` 
 ## Usage
 You need to add one line in your Model :
 
-    class Myclass
-      include Mongoid::Document
-      include Mongoid::Timestamps
-      **include Mongoid::Document::Mergeable**
-      
-      ...
-    end
+<pre><code>class Myclass
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  <b>include Mongoid::Document::Mergeable</b>
+  
+  ...
+end
+</code></pre>
 
 And then call :
 
