@@ -1,3 +1,6 @@
+# -*- encoding: utf-8 -*-
+$:.push File.expand_path("../lib/mongoid/document", __FILE__)
+
 Gem::Specification.new do |s|
   s.name        = "merge-mongoid"
   s.version     = "0.1"
