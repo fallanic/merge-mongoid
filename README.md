@@ -100,7 +100,7 @@ If you notice anything wrong, please feel free to send a Pull Request (including
 Same thing if you enhance the gem with some cool features, I would be happy to merge. 
 
 ## Getting Started
-Install the gem with: `gem install merge-mongoid` or add  `gem 'merge-mongoid'` to your Gemfile.
+Install the gem with: `gem install merge-mongoid` or add  `gem 'merge-mongoid', :git => 'https://github.com/fallanic/merge-mongoid'` to your Gemfile.
 
 ## Usage
 You need to add one line in your Model :
