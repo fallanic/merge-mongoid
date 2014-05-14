@@ -133,10 +133,14 @@ describe Mongoid::Document::Mergeable do
     end
     
     it "should merge the arrays of hashes with custom unique attribute and remove the duplicates if they exist" do
-      @A = FactoryGirl.build(:myclass)
+      initial_array_size = @A.array_hashes.size
+        
       #keeping the initial size
       @B.array_hashes.push({"attribute" => "yes sir"})
       @A.merge!(@B,{"array_hashes" => "attribute"})
+    
+      @A.array_hashes.size.should == initial_array_size + 2 # Hash with "other_attribute" + hash with "attribute":"yes sir"
+        
       #keeping a backup version
       @A_clone = @A.clone
       initial_array_size = @A_clone.array_hashes.size
