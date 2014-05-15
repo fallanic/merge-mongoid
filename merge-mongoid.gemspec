@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-$:.push File.expand_path("../lib/mongoid/document", __FILE__)
+$:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "merge-mongoid"
@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.summary     = "Easily merge two Mongoid documents."
   s.description = "Easily merge two Mongoid documents. When merging document B into document A, arrays and nested objects will be merged. For the other data types we keep Document A values."
 
-  s.files        = Dir["{lib,spec}/**/*", "[A-Z]*", "init.rb"] - ["Gemfile.lock"]
-  s.require_path = "lib"
+  s.files         = `git ls-files`.split("\n")
+  s.require_paths = ["lib"]
 
   s.add_development_dependency 'rspec', '~> 2.14.1' 
   s.add_development_dependency 'rails', '>= 3.2.0'
