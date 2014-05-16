@@ -52,7 +52,7 @@ module Mongoid
             # For Basic types (String, Double, Date, Boolean, etc...)
             # If the attribute is already defined in A and not nil, then we keep its value.
             # Else we copy the value of B into A
-            if a.nil? && (b != nil)
+            if a.blank? && (!b.blank?)
               a = b
             end
           end

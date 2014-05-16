@@ -148,6 +148,21 @@ describe Mongoid::Document::Mergeable do
       @A_clone.merge! @A
       # same object ids so the duplicates are removed
       @A_clone.array_hashes.size.should == initial_array_size
-    end    
+    end   
+    
+    it "should overwrite empty string" do
+      @A.a_string = ""
+      @B.a_string = "yes"
+      @A.merge! @B
+      @A.a_string.should == "yes"
+    end 
+    
+    it "should not overwrite when both are blank strings" do
+      @A.a_string = ""
+      @B.a_string = nil
+      @A.merge! @B
+      @A.a_string.should == ""
+    end   
+    
   end
 end
