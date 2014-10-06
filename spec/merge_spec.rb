@@ -17,6 +17,24 @@ class Myclass
   field :a_hash, :type => Hash
 end
 
+class MyInheritedclass < Myclass
+  field :b_hash, :type => Hash
+end
+
+class MyRandomclass
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  include Mongoid::Document::Mergeable
+  
+  field :a_string, :type => String
+  field :another_string, :type => String
+  field :a_number, :type => Float
+  field :a_boolean, :type => Boolean
+  field :array_simple_types, :type => Array
+  field :array_hashes, :type => Array
+  field :a_hash, :type => Hash
+end
+
 Mongoid.configure do |config|
   config.connect_to("merge_mongoid_spec")
 end
@@ -162,7 +180,19 @@ describe Mongoid::Document::Mergeable do
       @B.a_string = nil
       @A.merge! @B
       @A.a_string.should == ""
-    end   
+    end  
+    
+    it "should merge related objects" do
+      @AInh = MyInheritedclass.new
+      expect {@A.merge! @AInh}.to_not raise_error
+    end
+    
+    it "should not merge unrelated objects" do
+      @C = MyRandomclass.new
+      expect {@A.merge! @C}.to raise_error
+    end      
+    
+     
     
   end
 end
