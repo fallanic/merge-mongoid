@@ -34,7 +34,7 @@ module Mongoid
       
       def merge_attributes(a, b, hash_uniq_attr = {})
         # we might want to remove this test, and for instance merge the different types in an Array
-        if (a.class != NilClass) && (b.class != NilClass) && (a.class != b.class)
+        if ((a.class != NilClass) && (b.class != NilClass) && (a.class != b.class)) && !(((a.class == TrueClass) && (b.class == FalseClass)) || ((a.class == FalseClass) && (b.class == TrueClass)))
           raise "Can't merge different types : "+a.class.to_s+" and "+b.class.to_s
         else
           if (!a.nil?) && (a.is_a? Array) && (b.is_a? Array)

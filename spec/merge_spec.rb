@@ -192,6 +192,11 @@ describe Mongoid::Document::Mergeable do
       expect {@A.merge! @C}.to raise_error
     end      
     
+    it "should merge TrueClass and FalseClass attributes" do
+      @A.a_boolean = false;
+      @B.a_boolean = true;
+      expect {@A.merge! @B}.to_not raise_error
+    end      
      
     
   end
