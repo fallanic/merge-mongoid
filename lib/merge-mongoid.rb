@@ -20,7 +20,13 @@ module Mongoid
           #
           # We iterate on B attributes :
           another_document.attributes.keys.each do |key|
-            self[key] = merge_attributes(self[key],another_document[key],arr_of_hash_uniq[key])           
+            self[key] = merge_attributes(self[key],another_document[key],arr_of_hash_uniq[key])
+            #mongoid dirty checks don't always work correctly for arrays and maybe hashes, so we'll give it a little help
+            if self[key].is_a? Array
+                self.changed_attributes[key] = nil
+            elsif self[key].is_a? Hash
+                self.changed_attributes[key] = nil
+            end 
           end
           
           # saving the A model
