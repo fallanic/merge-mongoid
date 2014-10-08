@@ -1,6 +1,8 @@
 source "https://rubygems.org"
 
 gem "bson_ext"
-gem "debugger"
+group :development, :test do
+    gem "byebug"
+end
 
 gemspec
