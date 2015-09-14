@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 2.14.1' 
   s.add_development_dependency 'rails', '>= 3.2.0'
   s.add_development_dependency 'factory_girl_rails', '~> 3.6.0'
-  s.add_runtime_dependency 'mongoid', "~> 3.1.6"
+  s.add_runtime_dependency 'mongoid', ">= 3.1.6"
 
   s.rubyforge_project = s.name
   s.required_rubygems_version = ">= 1.3.4"
