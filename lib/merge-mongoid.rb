@@ -3,41 +3,47 @@ require 'mongoid'
 module Mongoid
   module Document
     module Mergeable
-      
+
       # Merge a mongoid document into another.
+      # ignored_attributes: Array of attributes you want to ignore when merging 2 documents
       # A.merge!(B)
-      def merge!(another_document, arr_of_hash_uniq = {})
+      def merge!(another_document, arr_of_hash_uniq = {}, ignored_attributes = [])
         if another_document.nil?
           raise "Cannot merge a nil document."
         elsif (self.class <=> another_document.class).nil?
           raise "Cannot merge two different models."
         elsif (!self.is_a? Mongoid::Document) || (!another_document.is_a? Mongoid::Document)
           raise "Can only merge mongoid documents."
-        else 
+        else
           # let's merge these documents
-          
+
           # A.merge!(B)
           #
           # We iterate on B attributes :
           another_document.attributes.keys.each do |key|
-            self[key] = merge_attributes(self[key],another_document[key],arr_of_hash_uniq[key])
-            #mongoid dirty checks don't always work correctly for arrays and maybe hashes, so we'll give it a little help
-            if self[key].is_a? Array
-                self.changed_attributes[key] = nil
-            elsif self[key].is_a? Hash
-                self.changed_attributes[key] = nil
-            end 
+            # If the current key is included in the ignore list, skip it.
+            if ignored_attributes.include?(key)
+              next
+            else
+              self[key] = merge_attributes(self[key],another_document[key],arr_of_hash_uniq[key])
+              #mongoid dirty checks don't always work correctly for arrays and maybe hashes, so we'll give it a little help
+              if self[key].is_a? Array
+                  self.changed_attributes[key] = nil
+              elsif self[key].is_a? Hash
+                  self.changed_attributes[key] = nil
+              end
+            end
           end
-          
+
           # saving the A model
           self.save
           # delete the B model
-          another_document.destroy 
+          another_document.destroy
         end
       end
-      
+
       private
-      
+
       def merge_attributes(a, b, hash_uniq_attr = {})
         # we might want to remove this test, and for instance merge the different types in an Array
         if ((a.class != NilClass) && (b.class != NilClass) && (a.class != b.class)) && !(((a.class == TrueClass) && (b.class == FalseClass)) || ((a.class == FalseClass) && (b.class == TrueClass)))
@@ -62,11 +68,11 @@ module Mongoid
               a = b
             end
           end
-          
-          return a 
+
+          return a
         end
       end
-      
+
       def dedupe(array, hash_uniq_attr = 'id')
         result = []
         ids = [] #where we store the uniqueness identifier
@@ -75,14 +81,14 @@ module Mongoid
             if !ids.include? value[hash_uniq_attr]
               ids << value[hash_uniq_attr]
               result << value
-            end  
+            end
           else
             if !result.include? value
               result << value
             end
           end
         end
-        
+
         result
       end
     end
