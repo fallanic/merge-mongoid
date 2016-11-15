@@ -122,6 +122,12 @@ B attributes will be merged into A.
 
 B is also destroyed after the merge has been successful.
 
+## Testing
+
+In the terminal, run `sudo mongod` to start the mongoDB connection
+
+Open another tab and run `rspec`
+
 
 That's all folks!
 
