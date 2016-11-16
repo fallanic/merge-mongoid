@@ -124,7 +124,14 @@ B is also destroyed after the merge has been successful.
 
 ## Testing
 
-In the terminal, run `sudo mongod` to start the mongoDB connection
+In the terminal, you'll need to start a mongoDB connection
+
+To do this, you'll need to run `mongod` while specifying a local folder
+
+EX:
+
+    $ mkdir tmpdb
+    $ mongod --dbpath ./tmpdb
 
 Open another tab and run `rspec`
 

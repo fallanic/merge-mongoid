@@ -207,12 +207,12 @@ describe Mongoid::Document::Mergeable do
       @A.array_hashes.size.should == 1
     end
 
-    it "should  merge attributes that are not included in the ignore_attributes array" do
-      @A.array_simple_types = ["test1"]
-      @B.array_simple_types = ["test2"]
-      @A.merge!(@B, {}, ['array_hashes'])
+    it "should merge attributes that are not included in the ignore_attributes array" do
+      @A.array_hashes = [{test1: "test1"}]
+      @B.array_hashes = [{test2: "test2"}]
+      @A.merge!(@B, {}, ['not_array_hashes'])
 
-      @A.array_simple_types.size.should == 2
+      @A.array_hashes.size.should == 2
     end
 
   end
